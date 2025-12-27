@@ -29,15 +29,24 @@ $(NAME): $(OBJ) $(LIBFT)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@make -C $(LIBFT_DIR) clean
 	@rm -f $(OBJ)
 	@echo "Archivos objeto eliminados"
 
 fclean: clean
-	@make -C $(LIBFT_DIR) fclean
 	@rm -rf $(NAME)
+	@rm -f tests.c runner_tests
 	@echo "LIBRERÍA $(NAME) ELIMINADA"
 
 re: fclean all
 
-.PHONY: all clean fclean re
+URL_TEST = https://raw.githubusercontent.com/feli-ohl/ft_printf/refs/heads/main/TESTS/tests.c
+
+test: all
+	@echo "Descargando tests desde GitHub..."
+	@curl -s -O $(URL_TEST)
+	@echo "Compilando..."
+	@$(CC) $(CFLAGS) tests.c -L. -lftprintf -o runner_tests
+	@echo "Archivo ejecutable runner_tests creado correctamente."
+	@echo "Para borrar el archivo de tests y el ejecutable, ejecutar 'make fclean'."
+
+.PHONY: all clean fclean re test
